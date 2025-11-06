@@ -57,23 +57,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isTransitioning && useTransition) return; // Previne empilhamento de transições
       isTransitioning = true;
 
-      // 'index' é o índice real (0 a 3, por exemplo)
-      // 'slideIndex' é o índice no trilho (incluindo clones)
       let slideIndex = index + 1; // +1 por causa do clone no início
       
-      // 1. Aplicar ou remover transição
       track.style.transition = useTransition ? 'transform 0.5s ease-in-out' : 'none';
 
-      // 2. Atualizar classes 'active' (apenas no slide visível)
       slides.forEach(slide => slide.classList.remove('active'));
       slides[slideIndex].classList.add('active');
 
-      // 3. Atualizar indicadores (baseado no índice real, 'index')
       allIndicators.forEach((ind, idx) => {
         ind.classList.toggle('active', idx === index);
       });
 
-      // 4. Calcular o movimento (Efeito Espelhado)
       const activeSlide = slides[slideIndex];
       const viewportCenter = carouselContainer.offsetWidth / 2;
       const slideCenter = activeSlide.offsetLeft + (activeSlide.offsetWidth / 2);
@@ -83,15 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function goToSlide(index) {
-      // 'index' aqui é o índice do slide REAL (0 a totalRealSlides - 1)
-      
-      // Prevenção de loop (se já estiver no slide, não faz nada)
+
       if (index === currentIndex && isTransitioning) return;
       
       if (index < 0) {
-        currentIndex = totalRealSlides - 1; // Ajusta o índice para o último real
+        currentIndex = totalRealSlides - 1; 
       } else if (index >= totalRealSlides) {
-        currentIndex = 0; // Ajusta o índice para o primeiro real
+        currentIndex = 0; 
       } else {
         currentIndex = index;
       }
@@ -103,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     prevButton.addEventListener('click', () => goToSlide(currentIndex - 1));
     nextButton.addEventListener('click', () => goToSlide(currentIndex + 1));
     
-    // Opcional: Clicar nos slides (agora precisa ajustar o índice)
+  
     slides.forEach((slide, index) => {
       slide.addEventListener('click', () => {
         // Se for o clone do início (índice 0)
@@ -123,14 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Quando a transição CSS terminar...
     track.addEventListener('transitionend', () => {
       isTransitioning = false; // Libera a flag
-
-      // O índice ATUAL é 0 (significa que o slide visível é o 1 real)
-      // O slide ANTERIOR era o 3 (o último real)
-      // O 'slideIndex' era o 4, que é o [Clone do 1]
-      
-      // Se o índice atual for o PRIMEIRO real (0) E o slide anterior 
-      // foi o ÚLTIMO real (totalRealSlides - 1).
-      // Isso é complicado de checar, então checamos o slide ATIVO.
       
       const activeSlideIndexInDOM = currentIndex + 1; // O slide que deveria estar ativo
       
@@ -149,18 +133,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Opcional: Timer
+
     setInterval(() => {
       goToSlide(currentIndex + 1);
     }, 4000);
 
-    // Chamar uma vez no início para centralizar o primeiro item REAL
-    // (índice 0, mas com transição falsa para pular para a posição inicial)
+
     updateCarousel(currentIndex, false);
   }
 
-  // --- Inicialização ---
-  // Lembre-se de chamar a função para seus carrosséis:
+
   setupInfiniteCarousel('carousel-1-root', 'carouselImages1', 'indicators1');
   setupInfiniteCarousel('carousel-2-root', 'carouselImages', 'indicators');
 
